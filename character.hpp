@@ -71,10 +71,13 @@ public:
 	}
 /* end constructor */
 
-/* position function */
+/* member controllers */
 	short getX() { return x; }
 	// short getY() { return y; }
+	bool getState() { return state; }
+/* end member controllers */
 
+/* position function */
 	short randomPosX()
 	{
 		srand((unsigned int)time(NULL));
