@@ -65,6 +65,33 @@ std::string numbers[50] =
 	" ooo "
 };
 
+std::string countdown[147] = 
+{
+	" ooooo ",
+	"o     o",
+	"     o ",
+	"   oo  ",
+	"     o ",
+	"o     o",
+	" ooooo ",
+
+	" ooooo ",
+	"o     o",
+	"     o ",
+	"    o  ",
+	"   o   ",
+	"  o    ",
+	"ooooooo",
+
+	"   o   ",
+	"  oo   ",
+	" ooo   ",
+	"   o   ",
+	"   o   ",
+	"   o   ",
+	"ooooooo"
+};
+
 /*
 	----------> x (width)
 	|
@@ -79,12 +106,11 @@ class Console
 private:
 	int height, width;
 	short lastPillarX;
-public:
-
 /* members for score controller */
 	short startScorePositionX, curScorePositionX;
 	int printedNumber;
 /* end members for score controller */
+public:
 
 /* constructor */
 	Console (){}
@@ -121,8 +147,17 @@ public:
 		SetConsoleCursorPosition(output, pos);
 	}
 
+	void hideCursor()
+	{
+		CONSOLE_CURSOR_INFO Cursor;
+		Cursor.bVisible = false;
+		Cursor.dwSize = sizeof(Cursor);
+		HANDLE Hand = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleCursorInfo(Hand, &Cursor);
+	}
+
 	// clear screen with given string
-	void clearScreen(std::string outer, std::string inner)
+	void clearScreen()
 	{
 		if ((width - 1) % 2 == 1)
 			width ++;
@@ -130,18 +165,10 @@ public:
 		{
 			for (int j=0; j<height; j++)
 			{
-				if (i == 0 || j == 0 || i == width - 1 || j == height - 1)
-				{
-					if (i%2 == 0)
-					{
-						setCursorPosition(i, j);
-						std::cout << outer ;
-					}
-				}
-				else
+				if (!(j == 0 || j == height - 1))
 				{
 					setCursorPosition(i, j);
-					std::cout << inner;
+					std::cout << " ";
 				}
 			}
 		}
@@ -150,48 +177,91 @@ public:
 	// print game information on the screen
 	void showInfo()
 	{
-		clearScreen("=", " ");
-		int start = 2;
-		std::ifstream input("rule.txt");  
-	    std::vector <std::string> sv;  
-	    std::string s;
-	    while( getline(input,s) )
-	    	sv.push_back(s);
-	    int starth = height / 2 - sv.size() / 2;
-	    int startw;
-	    for (int i=0; i<sv.size(); i++)
-	    {
-	    	startw = width / 2 - sv[i].length() / 2;
-	    	for (char c: sv[i])
-	    	{
-	    		setCursorPosition(startw++, starth);
-	    		std::cout << c;
-	    		Sleep(50);
-	    	}
-	    	starth ++;
-	    	// setCursorPosition(4, 4);
-	    	// Sleep(1000);
-	    	// std::cout << i; 
-		}	
+		showBorder();
+		clickSpaceToStart("Rules: (click space to confirm)");
+		clearScreen();
+		clickSpaceToStart("Click \"Space\" to Fly");
+		clearScreen();
+		clickSpaceToStart("No touching CEILING!");
+		clearScreen();
+		clickSpaceToStart("No touching FLOOR!");
+		clearScreen();
+		clickSpaceToStart("No touching PILLARS!");
+		clearScreen();
+		clickSpaceToStart("Ready? Click \"Space\" to Start");
+		clearScreen();
     }	
+
+    void clickSpaceToStart(std::string str)
+    {
+    	int starth = height / 2;
+	    int startw = width / 2 - str.length() / 2;
+    	for (char c: str)
+    	{
+    		setCursorPosition(startw++, starth);
+    		std::cout << c;
+    		Sleep(50);
+    	}
+		while (!kbhit())
+			if (getch() == ' ')
+			{
+				setCursorPosition(width / 2 - str.length() / 2, starth);
+				for (int i=0; i<str.length(); i++)
+					std::cout << " ";
+				break;
+			}
+    }
+
+    // void chooseBGC()
+    // {
+    // 	std::vector <std::string> str;
+    // 	str.push_back("Choose a Background Color");
+    // 	str.push_back("using \"w\", \"s\", \"d\"");
+    // 	str.push_back(" ");
+    // 	str.push_back("Original");
+    // 	int starth = height / 2 - 1;
+    // 	for (int i=0; i<str.size(); i++)
+    // 	{
+    // 		int startw = width / 2 - str[i].length() / 2;
+	   //  	for (char c: str[i])
+	   //  	{
+	   //  		setCursorPosition(startw++, starth);
+	   //  		std::cout << c;
+	   //  		Sleep(50);
+	   //  	}
+	   //  	starth ++;
+    // 	}
+    // 	while (!kbhit())
+    // 	{
+    // 		char cmd = getch();
+    // 		if (cmd == 'w' || cmd == 'W')
+    // 		{
+
+    // 		}
+    // 		else if (cmd == 's' || cmd == 'S')
+    // 		{
+
+    // 		}
+    // 		else if (cmd == 'd' || cmd == 'D')
+    // 		{
+    // 			break;
+    // 		}
+    // 	}
+    // }
 
     // print border on the screen
     void showBorder()
     {
     	if ((width - 1) % 2 == 1)
 			width ++;
+		setCursorPosition(0, 0);
+		std::cout << "▁ ▃ ▄ ▅ ▆ Flappy Bird ▆ ▅ ▄ ▃ ▁";
 		for (int i=0; i<width; i++)
 		{
-			for (int j=0; j<height; j++)
+			if (i%2 == 0)
 			{
-				if (j == 0 || j == height - 1)
-				{
-					if (i%2 == 0)
-					{
-						setCursorPosition(i, j);
-						std::cout << "■" ;
-					}
-				}
+				setCursorPosition(i, height - 1);
+				std::cout << "■" ;
 			}
 		}
     }
@@ -204,17 +274,9 @@ public:
     {
     	printedNumber = 0;
     	curScorePositionX = getWidth() / 2 - 9;
-    	std::deque <int> tmp;
-    	while (_score / 10 != 0)
-    	{
-    		tmp.push_front(_score % 10);
-    		_score /= 10;
-    	}
-    	tmp.push_front(_score % 10);
-    	for (int i=0; i<3-tmp.size(); i++)
-    		printNumber(0);
-    	for (int i=0; i<tmp.size(); i++)
-    		printNumber(tmp[i]);
+    	printNumber(_score / 100);
+    	printNumber(_score / 10 % 10);
+    	printNumber(_score % 10);
     }
 
     // print characters with number-like words
@@ -231,27 +293,34 @@ public:
 	// activate show FINAL score process on the screen
     void showFinalScore(int _score)
     {
-    	printedNumber = 0;
     	curScorePositionX = getWidth() / 2 - 9;
-    	std::deque <int> tmp;
-    	while (_score / 10 != 0)
+    	for (int i=0; i<3; i++)
     	{
-    		tmp.push_front(_score % 10);
-    		_score /= 10;
+    		for (int j=0; j<5; j++)
+			{
+				setCursorPosition(curScorePositionX, 31 + j);
+				std::cout << "     " << " ";
+			}
+			curScorePositionX += 6;
     	}
-    	tmp.push_front(_score % 10);
-    	for (int i=0; i<3-tmp.size(); i++)
-    		printNumber(0);
-    	for (int i=0; i<tmp.size(); i++)
-    		printNumber(tmp[i]);
+    	for (int i=0; i<=_score; i++)
+    	{
+    		printedNumber = 0;
+	    	curScorePositionX = getWidth() / 2 - 9;
+	    	printFinalNumber(i / 100);
+	    	printFinalNumber(i / 10 % 10);
+	    	printFinalNumber(i % 10);
+	    	Sleep(100);
+    	}
     }
 
     // print characters FINAL with number-like words
 	void printFinalNumber(int n)
 	{
+		short y = getHeight() / 2;
 		for (int i=0; i<5; i++)
 		{
-			setCursorPosition(curScorePositionX, 30 + i);
+			setCursorPosition(curScorePositionX, y + i);
 			for (char c: numbers[5 * n + i])
 				std::cout << c;
 			std::cout << std::endl;
@@ -261,15 +330,5 @@ public:
 /* end score function */
 
 };
-
-Console gamePreSetting(int w, int h)
-{
-	Console console(w, h);
-	console.clearScreen("=", " ");
-	console.showInfo();
-	getch();
-	console.clearScreen("#", " ");
-	return console;
-}
 
 Console console(30, 30);
