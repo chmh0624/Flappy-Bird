@@ -19,9 +19,8 @@ public:
 		bird = Bird();
 		bird.setScore(0);
 		console.showScore(bird.getScore());
-		pillarsIdx = -1;
 		startPillarsIdx = 0;
-		endPillarsIdx = 0;
+		endPillarsIdx = -1;
 		len = 0;
 		// if any pillar approaching to bird
 		influencedPillar = false;
@@ -37,14 +36,13 @@ public:
 /* render pillars */
 	void setPillar()
 	{
-		pillarsIdx ++;
+		endPillarsIdx ++;
 		len ++;
-		if (pillarsIdx >= 10)
-		{
-			pillarsIdx %= 10;
-			endPillarsIdx = pillarsIdx;
-		}
-		pillars[pillarsIdx] = Pillar();
+		if (endPillarsIdx >= 10)
+			endPillarsIdx %= 10;
+		if (startPillarsIdx >= 10)
+			startPillarsIdx %= 10;
+		pillars[endPillarsIdx] = Pillar();
 	}
 /* end render pillars */
 
@@ -56,11 +54,7 @@ public:
 		while (bird.getState()) 
 		{
 			if (!influencedPillar) 
-			{
 				setPillar();
-				console.setCursorPosition(4, 4);
-				std::cout << x ++ ;
-			}
 			influencedPillar = false;
 		/* pillar movement */
 			// data xx data
@@ -69,12 +63,16 @@ public:
 				for (int i=startPillarsIdx; i<10 && bird.getState(); i++)
 				{
 					bird.setState(!pillars[i].movingForward(bird));
+					if (pillars[i].getState() == false)
+						startPillarsIdx ++;
 					if (pillars[i].getX() > bird.getX())
 						influencedPillar = true;
 				}
 				for (int i=0; i<=endPillarsIdx && bird.getState(); i++)
 				{
 					bird.setState(!pillars[i].movingForward(bird));
+					if (pillars[i].getState() == false)
+						startPillarsIdx ++;
 					if (pillars[i].getX() > bird.getX())
 						influencedPillar = true;
 				}
@@ -88,14 +86,14 @@ public:
 				for (int i=startPillarsIdx; i<=endPillarsIdx && bird.getState(); i++)
 				{
 					bird.setState(!pillars[i].movingForward(bird));
+					if (pillars[i].getState() == false)
+						startPillarsIdx ++;
 					if (pillars[i].getX() > bird.getX())
 						influencedPillar = true;
 				}
 				Sleep(100);
 				if (!bird.getState())
 					break;
-				console.setCursorPosition(4, 6);
-				std::cout << x << " " << influencedPillar << " " << pillarsIdx;
 			}
 		/* end pillar movement */
 
