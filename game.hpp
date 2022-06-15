@@ -49,8 +49,6 @@ public:
 /* keyboard detection */
 	void playGame()
 	{
-		int x = 1;
-		setPillar();
 		while (bird.getState()) 
 		{
 			if (!influencedPillar) 
