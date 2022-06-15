@@ -1,5 +1,11 @@
 # Flappy-Bird
 
+## Compile the code into .exe
+- g++ -fexec-charset=BIG5 -static main.cpp -o main
+- Using g++
+- Big5 format 
+- Static Compile
+
 ## How to play?
 - Press "space" to make bird fly
 - Unable to touch the pillars, floor, ceiling
