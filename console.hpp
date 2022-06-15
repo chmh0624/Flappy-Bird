@@ -211,44 +211,7 @@ public:
 				break;
 			}
     }
-
-    // void chooseBGC()
-    // {
-    // 	std::vector <std::string> str;
-    // 	str.push_back("Choose a Background Color");
-    // 	str.push_back("using \"w\", \"s\", \"d\"");
-    // 	str.push_back(" ");
-    // 	str.push_back("Original");
-    // 	int starth = height / 2 - 1;
-    // 	for (int i=0; i<str.size(); i++)
-    // 	{
-    // 		int startw = width / 2 - str[i].length() / 2;
-	   //  	for (char c: str[i])
-	   //  	{
-	   //  		setCursorPosition(startw++, starth);
-	   //  		std::cout << c;
-	   //  		Sleep(50);
-	   //  	}
-	   //  	starth ++;
-    // 	}
-    // 	while (!kbhit())
-    // 	{
-    // 		char cmd = getch();
-    // 		if (cmd == 'w' || cmd == 'W')
-    // 		{
-
-    // 		}
-    // 		else if (cmd == 's' || cmd == 'S')
-    // 		{
-
-    // 		}
-    // 		else if (cmd == 'd' || cmd == 'D')
-    // 		{
-    // 			break;
-    // 		}
-    // 	}
-    // }
-
+	
     // print border on the screen
     void showBorder()
     {
